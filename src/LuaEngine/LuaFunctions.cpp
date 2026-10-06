@@ -351,6 +351,8 @@ ALERegister<Unit> UnitMethods[] =
     { "GetMovementType", &LuaUnit::GetMovementType },
     { "GetAttackers", &LuaUnit::GetAttackers },
     { "GetThreat", &LuaUnit::GetThreat },
+    { "HasAuraState", &LuaUnit::HasAuraState },
+    { "GetCastSpeedMultiplier", &LuaUnit::GetCastSpeedMultiplier },
 
     // Setters
     { "SetFaction", &LuaUnit::SetFaction },
@@ -394,6 +396,8 @@ ALERegister<Unit> UnitMethods[] =
     { "IsDying", &LuaUnit::IsDying },
     { "IsPvPFlagged", &LuaUnit::IsPvPFlagged },
     { "IsInCombat", &LuaUnit::IsInCombat },
+    { "IsHostileTo", &LuaUnit::IsHostileTo },
+    { "IsFriendlyTo", &LuaUnit::IsFriendlyTo },
     { "IsBanker", &LuaUnit::IsBanker },
     { "IsBattleMaster", &LuaUnit::IsBattleMaster },
     { "IsCharmed", &LuaUnit::IsCharmed },

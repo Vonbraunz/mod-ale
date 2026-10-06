@@ -273,6 +273,7 @@ public:
 
     void OnDestroyInstance(MapInstanced* /*mapInstanced*/, Map* map) override
     {
+        sALE->OnDestroyInstance(map);
         sALE->FreeInstanceId(map->GetInstanceId());
     }
 

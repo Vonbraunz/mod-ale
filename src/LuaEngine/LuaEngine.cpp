@@ -247,6 +247,28 @@ void ALE::CloseLua()
     continentDataRefs.clear();
 }
 
+// lua's stock print goes to stdout, which the worldserver never logs, so every
+// "print" diagnostic written over the years was silently invisible. route it
+// through the logger instead so it lands in Server.log.
+static int l_print(lua_State* L)
+{
+    int argc = lua_gettop(L);
+    std::string msg;
+
+    for (int i = 1; i <= argc; ++i)
+    {
+        size_t len = 0;
+        char const* part = luaL_tolstring(L, i, &len);
+        if (i > 1)
+            msg += '\t';
+        msg.append(part, len);
+        lua_pop(L, 1);
+    }
+
+    ALE_LOG_INFO("{}", msg);
+    return 0;
+}
+
 void ALE::OpenLua()
 {
     if (!ALEConfig::GetInstance().IsALEEnabled())
@@ -264,6 +286,9 @@ void ALE::OpenLua()
 
     // open base lua libraries
     luaL_openlibs(L);
+
+    // send lua print() to Server.log instead of stdout
+    lua_register(L, "print", l_print);
 
     // open additional lua libraries
 
@@ -846,14 +871,23 @@ bool ALE::ExecuteCall(int params, int res)
     int top = lua_gettop(L);
     int base = top - params;
 
-    // Expected: function, [parameters]
-    ASSERT(base > 0);
+    // playerbots-fork note (2026-09-27): these asserts used to take the whole realm down with
+    // STATUS_ASSERTION_FAILURE (c0000420), reliably ~2 minutes after a .reload ale, when a callback
+    // fired against a mismatched stack. log and skip the broken call instead of asserting - a lost
+    // callback beats a dead server, and the log keeps the top/params context for the real hunt.
+    if (base <= 0)
+    {
+        ALE_LOG_ERROR("[ALE]: ExecuteCall stack underflow (top={}, params={}), skipping call.", top, params);
+        return false;
+    }
 
     // Check function type
     if (!lua_isfunction(L, base))
     {
-        ALE_LOG_ERROR("[ALE]: Cannot execute call: registered value is {}, not a function.", luaL_tolstring(L, base, NULL));
-        ASSERT(false); // stack probably corrupt
+        char const* value = luaL_tolstring(L, base, NULL);
+        ALE_LOG_ERROR("[ALE]: Cannot execute call: registered value is {}, not a function.", value);
+        lua_pop(L, 1);
+        return false; // stack probably corrupt - skip instead of asserting
     }
 
     bool usetrace = ALEConfig::GetInstance().IsTraceBackEnabled();

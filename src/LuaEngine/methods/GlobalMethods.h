@@ -673,6 +673,7 @@ namespace LuaGlobalFunctions
      *         MAP_EVENT_ON_PLAYER_ENTER               =     21,       // (event, map, player)
      *         MAP_EVENT_ON_PLAYER_LEAVE               =     22,       // (event, map, player)
      *         MAP_EVENT_ON_UPDATE                     =     23,       // (event, map, diff)
+     *         MAP_EVENT_ON_DESTROY_INSTANCE           =     36,       // (event, map) - an instanced map is being destroyed
      *
      *         // Area trigger
      *         TRIGGER_EVENT_ON_TRIGGER                =     24,       // (event, player, triggerId) - Can return true

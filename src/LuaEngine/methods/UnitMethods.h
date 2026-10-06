@@ -428,6 +428,32 @@ namespace LuaUnit
     }
 
     /**
+     * Returns `true` if the [Unit] considers `other` hostile.
+     *
+     * @param [Unit] other
+     * @return bool isHostileTo
+     */
+    int IsHostileTo(lua_State* L, Unit* unit)
+    {
+        Unit* other = ALE::CHECKOBJ<Unit>(L, 2, false);
+        ALE::Push(L, other ? unit->IsHostileTo(other) : false);
+        return 1;
+    }
+
+    /**
+     * Returns `true` if the [Unit] considers `other` friendly.
+     *
+     * @param [Unit] other
+     * @return bool isFriendlyTo
+     */
+    int IsFriendlyTo(lua_State* L, Unit* unit)
+    {
+        Unit* other = ALE::CHECKOBJ<Unit>(L, 2, false);
+        ALE::Push(L, other ? unit->IsFriendlyTo(other) : false);
+        return 1;
+    }
+
+    /**
      * Returns true if the [Unit] is under water.
      *
      * @return bool underWater
@@ -2794,6 +2820,31 @@ namespace LuaUnit
         Unit* target = ALE::CHECKOBJ<Unit>(L, 2);
 
         ALE::Push(L, unit->GetThreatMgr().GetThreat(target));
+        return 1;
+    }
+
+    /**
+     * Returns true if the [Unit] currently has the given aura state.
+     *
+     * @param uint32 state : AuraStateType (1 defense, 2 healthless 20 pct, ...)
+     * @return bool hasState
+     */
+    int HasAuraState(lua_State* L, Unit* unit)
+    {
+        uint32 state = ALE::CHECKVAL<uint32>(L, 2);
+        ALE::Push(L, unit->HasAuraState(AuraStateType(state)));
+        return 1;
+    }
+
+    /**
+     * Returns UNIT_MOD_CAST_SPEED, the multiplier applied to this [Unit]'s cast
+     * times and global cooldown. 1.0 is unhasted, below 1.0 is hasted.
+     *
+     * @return float multiplier
+     */
+    int GetCastSpeedMultiplier(lua_State* L, Unit* unit)
+    {
+        ALE::Push(L, unit->GetFloatValue(UNIT_MOD_CAST_SPEED));
         return 1;
     }
 };

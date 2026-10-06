@@ -564,6 +564,7 @@ public:
     /* Map */
     void OnCreate(Map* map);
     void OnDestroy(Map* map);
+    void OnDestroyInstance(Map* map);
     void OnPlayerEnter(Map* map, Player* player);
     void OnPlayerLeave(Map* map, Player* player);
     void OnUpdate(Map* map, uint32 diff);

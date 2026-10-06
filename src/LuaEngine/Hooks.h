@@ -158,6 +158,9 @@ namespace Hooks
         GAME_EVENT_START                        =     34,       // (event, gameeventid)
         GAME_EVENT_STOP                         =     35,       // (event, gameeventid)
 
+        // Custom
+        MAP_EVENT_ON_DESTROY_INSTANCE           =     36,       // (event, map) - an instanced map is being destroyed (reset, unload or .instance unbind)
+
         SERVER_EVENT_COUNT
     };
 

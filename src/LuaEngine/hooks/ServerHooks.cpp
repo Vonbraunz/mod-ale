@@ -293,6 +293,13 @@ void ALE::OnDestroy(Map* map)
     CallAllFunctions(ServerEventBindings, key);
 }
 
+void ALE::OnDestroyInstance(Map* map)
+{
+    START_HOOK(MAP_EVENT_ON_DESTROY_INSTANCE);
+    Push(map);
+    CallAllFunctions(ServerEventBindings, key);
+}
+
 void ALE::OnPlayerEnter(Map* map, Player* player)
 {
     START_HOOK(MAP_EVENT_ON_PLAYER_ENTER);
